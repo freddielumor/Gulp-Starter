@@ -9,7 +9,7 @@ const concat = require('gulp-concat');
 const babel = require('gulp-babel');
 const cleanCSS = require('gulp-clean-css');
 const rename = require("gulp-rename");
-const borwserSync = require('browser-sync').create();
+const browserSync = require('browser-sync').create();
 
 /*******************************
     Define Source & Dist Paths
@@ -37,7 +37,7 @@ gulp.task('sass', () =>
         .pipe(concat('main.scss'))
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest(cssSrcPath))
-        .pipe(borwserSync.stream())
+        .pipe(browserSync.stream())
 );
 
 // Concatinate Js Then transpile to ES5
@@ -45,14 +45,20 @@ gulp.task('concatjs', () =>
     gulp.src(`${jsSrcPath}/*.js`)
         .pipe(babel())
         .pipe(gulp.dest(jsSrcPath))
-        .pipe(borwserSync.stream())
 );
 
-// Default Task - Watch files for changes
-gulp.task('default', function () {
-    gulp.watch(`${srcPath}/*.html`).on('change', borwserSync.reload);
+// Watch Sass & Serve
+gulp.task('serve', function () {
+    browserSync.init({
+        server: "./src"
+    });
+});
+
+// Default Task - Start Server & Watch files for changes
+gulp.task('default', ['serve'], function () {
+    gulp.watch(`${srcPath}/*.html`).on('change', browserSync.reload);
     gulp.watch(`${sassSrcPath}/*.scss`, ['sass']);
-    gulp.watch(`${jsSrcPath}/*.js`, ['concatjs']);
+    gulp.watch(`${jsSrcPath}/*.js`, ['concatjs']).on('change', browserSync.reload);
 });
 
 /*******************************
