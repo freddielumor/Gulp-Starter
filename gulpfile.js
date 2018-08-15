@@ -8,6 +8,7 @@ const sass = require('gulp-sass');
 const concat = require('gulp-concat');
 const babel = require('gulp-babel');
 const cleanCSS = require('gulp-clean-css');
+const rename = require("gulp-rename");
 const borwserSync = require('browser-sync').create();
 
 /*******************************
@@ -42,7 +43,6 @@ gulp.task('sass', () =>
 // Concatinate Js Then transpile to ES5
 gulp.task('concatjs', () =>
     gulp.src(`${jsSrcPath}/*.js`)
-        .pipe(concat('main.js'))
         .pipe(babel())
         .pipe(gulp.dest(jsSrcPath))
         .pipe(borwserSync.stream())
@@ -65,16 +65,19 @@ gulp.task('buildHtml', () =>
         .pipe(gulp.dest(distPath))
 );
 
+// Minify css, rename .min.css in production build
 gulp.task('minifyCss', () => {
     gulp.src(`${cssSrcPath}/main.css`)
         .pipe(cleanCSS({ compatibility: 'ie8' }))
+        .pipe(rename('main.min.css'))
         .pipe(gulp.dest(cssDistPath));
 });
 
-// Uglify & Concatinate Js Then transpile to ES5
+// Uglify & Concatinate Js Then transpile to ES5 & rename .min.js in production build
 gulp.task('buildJs', () =>
     gulp.src(`${jsSrcPath}/*.js`)
         .pipe(concat('main.js'))
+        .pipe(rename('main.min.js'))
         .pipe(babel())
         .pipe(uglify())
         .pipe(gulp.dest(jsDistPath))
