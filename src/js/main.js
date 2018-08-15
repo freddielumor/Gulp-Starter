@@ -1,4 +1,4 @@
-console.log('js file 1');
+console.log('main js 1');
 
 
 
@@ -7,4 +7,4 @@ console.log('js file 1');
 
 
 
-console.log('js file 2');
+console.log('main js 2');

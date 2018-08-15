@@ -31,40 +31,45 @@ const jsPath = 'dist/js';
 // Compile SASS
 gulp.task('sass', () =>
     gulp.src(`${sassSrcPath}/*.scss`)
+        .pipe(concat('main.scss'))
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest(cssPath))
         .pipe(borwserSync.stream())
 );
 
-// Default Task
-gulp.task('default', ['copyHtml', 'imageMin', 'sass', 'concat']);
+// Concatinate Js Then transpile to ES5
+gulp.task('concatjs', () =>
+    gulp.src(`${jsSrcPath}/*.js`)
+        .pipe(concat('main.js'))
+        .pipe(babel())
+        .pipe(gulp.dest(jsPath))
+);
 
-// Watch files for changes
-gulp.task('watch', function () {
+// Default Task - Watch files for changes
+gulp.task('default', function () {
     gulp.watch(`${srcPath}/*.html`).on('change', borwserSync.reload);
-    // gulp.watch(`${imageSrcPath}/*`, ['imageMin']);
-    gulp.watch(`${imageSrcPath}/*.scss`, ['sass']);
-    // gulp.watch(`${jsSrcPath}/*.js`, ['concat']);
+    gulp.watch(`${sassSrcPath}/*.scss`, ['sass']);
+    gulp.watch(`${jsSrcPath}/*.js`, ['concatjs']);
 });
 
 /*******************************
-    Build Tasks
+    Define Build Tasks
 ********************************/
 
 // Copy All HTML files
-gulp.task('copyHtml', () =>
+gulp.task('buildHtml', () =>
     gulp.src(`${srcPath}/*.html`)
         .pipe(gulp.dest(distPath))
 );
 
-gulp.task('minify-css', () => {
+gulp.task('minifyCss', () => {
     gulp.src(`${cssPath}/main.css`)
         .pipe(cleanCSS({ compatibility: 'ie8' }))
         .pipe(gulp.dest(cssPath));
 });
 
 // Uglify & Concatinate Js Then transpile to ES5
-gulp.task('concat', () =>
+gulp.task('buildJs', () =>
     gulp.src(`${jsSrcPath}/*.js`)
         .pipe(concat('main.js'))
         .pipe(babel())
@@ -80,4 +85,4 @@ gulp.task('imageMin', () =>
 );
 
 // Build Task
-gulp.task('build', ['copyHtml', 'imageMin', 'minify-css', 'concat']);
+gulp.task('build', ['buildHtml', 'imageMin', 'minifyCss', 'buildJs']);
