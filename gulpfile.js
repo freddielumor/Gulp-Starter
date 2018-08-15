@@ -17,12 +17,14 @@ const srcPath = 'src';
 const distPath = 'dist';
 
 const imageSrcPath = 'src/images';
-const sassSrcPath = 'src/scss';
-const jsSrcPath = 'src/js';
+const imageDistPath = 'dist/images';
 
-const imagePath = 'dist/images';
-const cssPath = 'dist/css';
-const jsPath = 'dist/js';
+const sassSrcPath = 'src/scss';
+const cssSrcPath = 'src/css';
+const cssDistPath = 'dist/css';
+
+const jsSrcPath = 'src/js';
+const jsDistPath = 'dist/js';
 
 /*******************************
     Define Tasks
@@ -33,7 +35,7 @@ gulp.task('sass', () =>
     gulp.src(`${sassSrcPath}/*.scss`)
         .pipe(concat('main.scss'))
         .pipe(sass().on('error', sass.logError))
-        .pipe(gulp.dest(cssPath))
+        .pipe(gulp.dest(cssSrcPath))
         .pipe(borwserSync.stream())
 );
 
@@ -42,7 +44,8 @@ gulp.task('concatjs', () =>
     gulp.src(`${jsSrcPath}/*.js`)
         .pipe(concat('main.js'))
         .pipe(babel())
-        .pipe(gulp.dest(jsPath))
+        .pipe(gulp.dest(jsSrcPath))
+        .pipe(borwserSync.stream())
 );
 
 // Default Task - Watch files for changes
@@ -63,9 +66,9 @@ gulp.task('buildHtml', () =>
 );
 
 gulp.task('minifyCss', () => {
-    gulp.src(`${cssPath}/main.css`)
+    gulp.src(`${cssSrcPath}/main.css`)
         .pipe(cleanCSS({ compatibility: 'ie8' }))
-        .pipe(gulp.dest(cssPath));
+        .pipe(gulp.dest(cssDistPath));
 });
 
 // Uglify & Concatinate Js Then transpile to ES5
@@ -74,14 +77,14 @@ gulp.task('buildJs', () =>
         .pipe(concat('main.js'))
         .pipe(babel())
         .pipe(uglify())
-        .pipe(gulp.dest(jsPath))
+        .pipe(gulp.dest(jsDistPath))
 );
 
 // Minify Images
 gulp.task('imageMin', () =>
     gulp.src(`${imageSrcPath}/*`)
         .pipe(imagemin())
-        .pipe(gulp.dest(imagePath))
+        .pipe(gulp.dest(imageDistPath))
 );
 
 // Build Task
