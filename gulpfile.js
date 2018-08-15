@@ -47,7 +47,7 @@ gulp.task('concatjs', () =>
         .pipe(gulp.dest(jsSrcPath))
 );
 
-// Watch Sass & Serve
+// Browsersync server
 gulp.task('serve', function () {
     browserSync.init({
         server: "./src"
