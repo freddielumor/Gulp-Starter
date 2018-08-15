@@ -42,9 +42,9 @@ gulp.task('default', ['copyHtml', 'imageMin', 'sass', 'concat']);
 // Watch files for changes
 gulp.task('watch', function () {
     gulp.watch(`${srcPath}/*.html`).on('change', borwserSync.reload);
-    gulp.watch(`${imageSrcPath}/*`, ['imageMin']);
+    // gulp.watch(`${imageSrcPath}/*`, ['imageMin']);
     gulp.watch(`${imageSrcPath}/*.scss`, ['sass']);
-    gulp.watch(`${jsSrcPath}/*.js`, ['concat']);
+    // gulp.watch(`${jsSrcPath}/*.js`, ['concat']);
 });
 
 /*******************************
