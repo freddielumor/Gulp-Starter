@@ -1,0 +1,1 @@
+"use strict";console.log("js file 1"),console.log("js file 2"),console.log("this is js file 2");

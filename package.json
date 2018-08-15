@@ -1,0 +1,34 @@
+{
+  "name": "gulp-starter",
+  "version": "1.0.0",
+  "description": "Gulp starter pack",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freddielumor/Gulp-Starter.git"
+  },
+  "keywords": [
+    "Gulp",
+    "Javascript"
+  ],
+  "author": "Freddie Lumor",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/freddielumor/Gulp-Starter/issues"
+  },
+  "homepage": "https://github.com/freddielumor/Gulp-Starter#readme",
+  "devDependencies": {
+    "@babel/core": "^7.0.0-rc.1",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^8.0.0-beta.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-imagemin": "^4.1.0",
+    "gulp-sass": "^4.0.1",
+    "gulp-uglify": "^3.0.1"
+  }
+}
