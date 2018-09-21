@@ -31,7 +31,8 @@
     "gulp-concat": "^2.6.1",
     "gulp-imagemin": "^4.1.0",
     "gulp-rename": "^1.4.0",
-    "gulp-sass": "^4.0.1"
+    "gulp-sass": "^4.0.1",
+    "gulp-uglify": "^3.0.1"
   },
   "dependencies": {}
 }
