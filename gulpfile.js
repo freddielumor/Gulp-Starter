@@ -6,9 +6,8 @@ const imagemin = require('gulp-imagemin');
 const uglify = require('gulp-uglify');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
-const babel = require('gulp-babel');
 const cleanCSS = require('gulp-clean-css');
-const rename = require("gulp-rename");
+const babel = require('gulp-babel');
 const browserSync = require('browser-sync').create();
 
 /*******************************
@@ -19,6 +18,9 @@ const distPath = 'dist';
 
 const imageSrcPath = 'src/images';
 const imageDistPath = 'dist/images';
+
+const fontSrcPath = 'src/font';
+const fontDistPath = 'dist/font';
 
 const sassSrcPath = 'src/scss';
 const cssSrcPath = 'src/css';
@@ -33,16 +35,16 @@ const jsDistPath = 'dist/js';
 
 // Compile SASS
 gulp.task('sass', () =>
-    gulp.src(`${sassSrcPath}/*.scss`)
+    gulp.src(`${sassSrcPath}/main.scss`)
         .pipe(concat('main.scss'))
         .pipe(sass().on('error', sass.logError))
         .pipe(gulp.dest(cssSrcPath))
         .pipe(browserSync.stream())
 );
 
-// Concatinate Js Then transpile to ES5
-gulp.task('concatjs', () =>
-    gulp.src(`${jsSrcPath}/*.js`)
+// JS Task
+gulp.task('js', () =>
+    gulp.src(`${jsSrcPath}/main.js`)
         .pipe(babel())
         .pipe(gulp.dest(jsSrcPath))
 );
@@ -57,8 +59,8 @@ gulp.task('serve', function () {
 // Default Task - Start Server & Watch files for changes
 gulp.task('default', ['serve'], function () {
     gulp.watch(`${srcPath}/*.html`).on('change', browserSync.reload);
-    gulp.watch(`${sassSrcPath}/*.scss`, ['sass']);
-    gulp.watch(`${jsSrcPath}/*.js`, ['concatjs']).on('change', browserSync.reload);
+    gulp.watch(`${sassSrcPath}/main.scss`, ['sass']);
+    gulp.watch(`${jsSrcPath}/main.js`, ['js']).on('change', browserSync.reload);
 });
 
 /*******************************
@@ -71,21 +73,21 @@ gulp.task('buildHtml', () =>
         .pipe(gulp.dest(distPath))
 );
 
-// Minify css, rename .min.css in production build
+// Minify css
 gulp.task('minifyCss', () => {
     gulp.src(`${cssSrcPath}/main.css`)
         .pipe(cleanCSS({ compatibility: 'ie8' }))
-        .pipe(rename('main.min.css'))
-        .pipe(gulp.dest(cssDistPath));
+        .pipe(gulp.dest(cssDistPath))
 });
 
-// Uglify & Concatinate Js Then transpile to ES5 & rename .min.js in production build
+// Uglify & Concatinate Js Then transpile to ES5
 gulp.task('buildJs', () =>
-    gulp.src(`${jsSrcPath}/*.js`)
+    gulp.src(`${jsSrcPath}/main.js`)
         .pipe(concat('main.js'))
-        .pipe(rename('main.min.js'))
         .pipe(babel())
-        .pipe(uglify())
+        .pipe(uglify().on('error', function (e) {
+            console.log(e);
+        }))
         .pipe(gulp.dest(jsDistPath))
 );
 
@@ -96,5 +98,11 @@ gulp.task('imageMin', () =>
         .pipe(gulp.dest(imageDistPath))
 );
 
+// Copy Fonts
+gulp.task('buildFont', () =>
+    gulp.src(`${fontSrcPath}/*`)
+        .pipe(gulp.dest(fontDistPath))
+);
+
 // Build Task
-gulp.task('build', ['buildHtml', 'imageMin', 'minifyCss', 'buildJs']);
+gulp.task('build', ['buildHtml', 'minifyCss', 'buildJs', 'imageMin', 'buildFont']);
