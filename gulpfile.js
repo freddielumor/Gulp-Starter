@@ -45,7 +45,6 @@ gulp.task('sass', () =>
 // JS Task
 gulp.task('js', () =>
     gulp.src(`${jsSrcPath}/main.js`)
-        .pipe(babel())
         .pipe(gulp.dest(jsSrcPath))
 );
 
