@@ -107,17 +107,10 @@ function buildFont() {
   return gulp.src(`${fontSrcPath}/*`).pipe(gulp.dest(fontDistPath));
 }
 
-// Build Task
-function imageMin() {
-  return gulp
-    .src(`${imageSrcPath}/*`)
-    .pipe(imagemin())
-    .pipe(gulp.dest(imageDistPath));
-}
-
 exports.buildHtml = buildHtml;
 exports.minifyCss = minifyCss;
 exports.buildJs = buildJs;
 exports.imageMin = imageMin;
 exports.buildFont = buildFont;
+// Build Task
 exports.build = series(buildHtml, minifyCss, buildJs, imageMin, buildFont);
