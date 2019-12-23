@@ -1,2 +1,1 @@
-"use strict";
-const title = document.getElementById('title');
+const title = document.getElementById("title");

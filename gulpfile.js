@@ -1,107 +1,123 @@
 /*******************************
     Require Packages
 ********************************/
-const gulp = require('gulp');
-const imagemin = require('gulp-imagemin');
-const uglify = require('gulp-uglify');
-const sass = require('gulp-sass');
-const concat = require('gulp-concat');
-const cleanCSS = require('gulp-clean-css');
-const babel = require('gulp-babel');
-const browserSync = require('browser-sync').create();
+const gulp = require("gulp");
+const { series } = require("gulp");
+const babel = require("gulp-babel");
+const imagemin = require("gulp-imagemin");
+const uglify = require("gulp-uglify");
+const sass = require("gulp-sass");
+const concat = require("gulp-concat");
+const cleanCSS = require("gulp-clean-css");
+const browserSync = require("browser-sync").create();
 
 /*******************************
     Define Source & Dist Paths
 ********************************/
-const srcPath = 'src';
-const distPath = 'dist';
+const srcPath = "src";
+const distPath = "dist";
 
-const imageSrcPath = 'src/images';
-const imageDistPath = 'dist/images';
+const imageSrcPath = "src/images";
+const imageDistPath = "dist/images";
 
-const fontSrcPath = 'src/font';
-const fontDistPath = 'dist/font';
+const fontSrcPath = "src/font";
+const fontDistPath = "dist/font";
 
-const sassSrcPath = 'src/scss';
-const cssSrcPath = 'src/css';
-const cssDistPath = 'dist/css';
+const sassSrcPath = "src/scss";
+const cssSrcPath = "src/css";
+const cssDistPath = "dist/css";
 
-const jsSrcPath = 'src/js';
-const jsDistPath = 'dist/js';
+const jsSrcPath = "src/js";
+const jsDistPath = "dist/js";
 
 /*******************************
     Define Tasks
 ********************************/
 
 // Compile SASS
-gulp.task('sass', () =>
-    gulp.src(`${sassSrcPath}/main.scss`)
-        .pipe(concat('main.scss'))
-        .pipe(sass().on('error', sass.logError))
-        .pipe(gulp.dest(cssSrcPath))
-        .pipe(browserSync.stream())
-);
+function style() {
+  return gulp
+    .src(`${sassSrcPath}/*.scss`)
+    .pipe(concat("main.scss"))
+    .pipe(sass())
+    .pipe(gulp.dest(cssSrcPath))
+    .pipe(browserSync.stream());
+}
 
-// JS Task
-gulp.task('js', () =>
-    gulp.src(`${jsSrcPath}/main.js`)
-        .pipe(gulp.dest(jsSrcPath))
-);
+// Start Server & Watch files for changes
+function watch() {
+  browserSync.init({
+    server: {
+      baseDir: "./src"
+    }
+  });
+  gulp.watch(`${srcPath}/*.html`).on("change", browserSync.reload);
+  gulp.watch(`${sassSrcPath}/*.scss`, style);
+  gulp.watch(`${jsSrcPath}/*.js`).on("change", browserSync.reload);
+}
 
-// Browsersync server
-gulp.task('serve', function () {
-    browserSync.init({
-        server: "./src"
-    });
-});
-
-// Default Task - Start Server & Watch files for changes
-gulp.task('default', ['serve'], function () {
-    gulp.watch(`${srcPath}/*.html`).on('change', browserSync.reload);
-    gulp.watch(`${sassSrcPath}/main.scss`, ['sass']);
-    gulp.watch(`${jsSrcPath}/main.js`, ['js']).on('change', browserSync.reload);
-});
+exports.style = style;
+exports.watch = watch;
 
 /*******************************
     Define Build Tasks
 ********************************/
 
 // Copy All HTML files
-gulp.task('buildHtml', () =>
-    gulp.src(`${srcPath}/*.html`)
-        .pipe(gulp.dest(distPath))
-);
+function buildHtml() {
+  return gulp.src(`${srcPath}/*.html`).pipe(gulp.dest(distPath));
+}
 
 // Minify css
-gulp.task('minifyCss', () => {
-    gulp.src(`${cssSrcPath}/main.css`)
-        .pipe(cleanCSS({ compatibility: 'ie8' }))
-        .pipe(gulp.dest(cssDistPath))
-});
+function minifyCss() {
+  return gulp
+    .src(`${cssSrcPath}/main.css`)
+    .pipe(cleanCSS({ compatibility: "ie8" }))
+    .pipe(gulp.dest(cssDistPath));
+}
 
-// Uglify & Concatinate Js Then transpile to ES5
-gulp.task('buildJs', () =>
-    gulp.src(`${jsSrcPath}/main.js`)
-        .pipe(concat('main.js'))
-        .pipe(babel())
-        .pipe(uglify().on('error', function (e) {
-            console.log(e);
-        }))
-        .pipe(gulp.dest(jsDistPath))
-);
+// Uglify & Concatinate Js
+function buildJs() {
+  return gulp
+    .src(`${jsSrcPath}/main.js`)
+    .pipe(concat("main.js"))
+    .pipe(
+      babel({
+        presets: ["@babel/env"]
+      })
+    )
+    .pipe(
+      uglify().on("error", function(e) {
+        console.log(e);
+      })
+    )
+    .pipe(gulp.dest(jsDistPath));
+}
 
 // Minify Images
-gulp.task('imageMin', () =>
-    gulp.src(`${imageSrcPath}/*`)
-        .pipe(imagemin())
-        .pipe(gulp.dest(imageDistPath))
-);
+function imageMin() {
+  return gulp
+    .src(`${imageSrcPath}/*`)
+    .pipe(imagemin())
+    .pipe(gulp.dest(imageDistPath));
+}
 
 // Copy Fonts
-gulp.task('buildFont', () =>
-    gulp.src(`${fontSrcPath}/*`)
-        .pipe(gulp.dest(fontDistPath))
-);
+function buildFont() {
+  return gulp.src(`${fontSrcPath}/*`).pipe(gulp.dest(fontDistPath));
+}
 
 // Build Task
-gulp.task('build', ['buildHtml', 'minifyCss', 'buildJs', 'imageMin', 'buildFont']);
+function imageMin() {
+  return gulp
+    .src(`${imageSrcPath}/*`)
+    .pipe(imagemin())
+    .pipe(gulp.dest(imageDistPath));
+}
+
+exports.buildHtml = buildHtml;
+exports.minifyCss = minifyCss;
+exports.buildJs = buildJs;
+exports.imageMin = imageMin;
+exports.buildFont = buildFont;
+exports.build = series(buildHtml, minifyCss, buildJs, imageMin, buildFont);
