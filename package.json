@@ -4,7 +4,7 @@
   "description": "Gulp starter pack",
   "main": "index.js",
   "scripts": {
-    "start": "gulp",
+    "start": "gulp watch",
     "build": "gulp build"
   },
   "repository": {
