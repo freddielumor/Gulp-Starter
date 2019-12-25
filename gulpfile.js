@@ -37,7 +37,7 @@ const jsDistPath = "dist/js";
 // Compile SASS
 function style() {
   return gulp
-    .src(`${sassSrcPath}/*.scss`)
+    .src(`${sassSrcPath}/**/*.scss`)
     .pipe(concat("main.scss"))
     .pipe(sass())
     .pipe(gulp.dest(cssSrcPath))
@@ -52,8 +52,8 @@ function watch() {
     }
   });
   gulp.watch(`${srcPath}/*.html`).on("change", browserSync.reload);
-  gulp.watch(`${sassSrcPath}/*.scss`, style);
-  gulp.watch(`${jsSrcPath}/*.js`).on("change", browserSync.reload);
+  gulp.watch(`${sassSrcPath}/**/*.scss`, style);
+  gulp.watch(`${jsSrcPath}/**/*.js`).on("change", browserSync.reload);
 }
 
 exports.style = style;
